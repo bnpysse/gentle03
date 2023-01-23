@@ -87,6 +87,30 @@ fn main() {
     if path.is_dir() {
         println!("{}", path.display());
     }
-    
-    
+    let mut path = env::current_dir().expect("can't access current directory");
+    println!("\nCurrent directory : {}", path.display());
+    loop {
+        println!("{}", path.display());
+        if !path.pop() {
+            break;
+        }
+    }    
+    // 某個文件的信息
+    use std::path::Path;
+    use std::os::unix::fs::PermissionsExt;
+
+    fn get_filt_info(filename: &str) {
+        let path = Path::new(&filename);
+        match path.metadata() {
+            Ok(data) => {
+                println!("type {:?}", data.file_type());
+                println!("len {}", data.len());
+                println!("perm {:?}", data.permissions());
+                println!("perm {:x}", data.permissions().mode());
+                println!("modified {:?}", data.modified());
+            },
+            Err(e) => println!("error {:?}", e),
+        }
+    }
+    get_filt_info("test.txt");
 }
